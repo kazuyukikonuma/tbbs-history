@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>台北事業の歴史 — インタラクティブビジュアライズ</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&family=Bebas+Neue&display=swap');
+
+  :root {
+    --bg: #f8f9fb;
+    --surface: #ffffff;
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --text-light: #94a3b8;
+    --revenue: #2563eb;
+    --profit-pos: #16a34a;
+    --profit-neg: #dc2626;
+    --enrollment: #d97706;
+    --birth: #7c3aed;
+    --staff: #ea580c;
+    --accent: #2563eb;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Noto Sans JP', sans-serif; min-height: 100vh; }
+
+  .header {
+    background: var(--surface); border-bottom: 1px solid var(--border); padding: 26px 40px 18px;
+  }
+  .header-badge { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: var(--accent); text-transform: uppercase; margin-bottom: 7px; }
+  .header-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(28px,4vw,44px); letter-spacing: 0.05em; color: var(--text); margin-bottom: 4px; }
+  .header-sub { font-size: 12px; color: var(--text-muted); }
+
+  .controls-bar {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 12px 40px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  }
+  .controls-label { font-size: 11px; letter-spacing: 0.1em; color: var(--text-muted); text-transform: uppercase; margin-right: 4px; font-weight: 600; }
+  .toggle-btn {
+    display: flex; align-items: center; gap: 7px; padding: 5px 12px;
+    border-radius: 20px; border: 1.5px solid; background: transparent;
+    cursor: pointer; font-family: 'Noto Sans JP', sans-serif; font-size: 12px; font-weight: 500;
+    transition: all 0.18s; user-select: none;
+  }
+  .toggle-btn.active  { opacity: 1; }
+  .toggle-btn.inactive { opacity: 0.28; filter: grayscale(0.7); }
+  .toggle-btn .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .btn-revenue    { border-color: var(--revenue);    color: var(--revenue);    }
+  .btn-revenue.active    { background: rgba(37,99,235,0.06); }
+  .btn-revenue    .dot   { background: var(--revenue); }
+  .btn-profit     { border-color: var(--profit-neg); color: var(--profit-neg); }
+  .btn-profit.active     { background: rgba(220,38,38,0.06); }
+  .btn-profit     .dot   { background: var(--profit-neg); }
+  .btn-enrollment { border-color: var(--enrollment); color: var(--enrollment); }
+  .btn-enrollment.active { background: rgba(217,119,6,0.06); }
+  .btn-enrollment .dot   { background: var(--enrollment); }
+  .btn-birth      { border-color: var(--birth);      color: var(--birth);      }
+  .btn-birth.active      { background: rgba(124,58,237,0.06); }
+  .btn-birth      .dot   { background: var(--birth); }
+  .btn-staff      { border-color: var(--staff);      color: var(--staff);      }
+  .btn-staff.active      { background: rgba(234,88,12,0.06); }
+  .btn-staff      .dot   { background: var(--staff); }
+
+  .main { padding: 22px 40px; display: flex; flex-direction: column; gap: 18px; }
+
+  .kpi-strip { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; }
+  .kpi-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 13px 15px; transition: box-shadow 0.2s;
+  }
+  .kpi-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+  .kpi-label { font-size: 10px; letter-spacing: 0.09em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; font-weight: 600; }
+  .kpi-value { font-family: 'DM Mono', monospace; font-size: 19px; font-weight: 500; margin-bottom: 2px; }
+  .kpi-sub   { font-size: 10px; color: var(--text-muted); }
+
+  .chart-wrapper {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 18px 22px 10px; position: relative;
+  }
+  .chart-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+  .chart-title  { font-size: 13px; font-weight: 700; color: var(--text); }
+  .chart-hint   { font-size: 11px; color: var(--text-light); }
+  #mainChart    { width: 100%; height: 500px; display: block; overflow: visible; }
+
+  /* ERA FLOAT */
+  #eraFloat {
+    position: fixed; pointer-events: none; opacity: 0; transition: opacity 0.16s;
+    z-index: 200; min-width: 255px; max-width: 315px;
+    border-radius: 10px; padding: 13px 15px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.13), 0 1px 4px rgba(0,0,0,0.07); border: 1px solid;
+  }
+  #eraFloat.visible { opacity: 1; }
+  #eraFloat.blue   { background: #eff6ff; border-color: #93c5fd; }
+  #eraFloat.red    { background: #fef2f2; border-color: #fca5a5; }
+  #eraFloat.orange { background: #fff7ed; border-color: #fdba74; }
+  .ef-period { font-family:'DM Mono',monospace; font-size:10.5px; font-weight:600; letter-spacing:0.1em; margin-bottom:4px; }
+  #eraFloat.blue   .ef-period { color:#1d4ed8; }
+  #eraFloat.red    .ef-period { color:#b91c1c; }
+  #eraFloat.orange .ef-period { color:#c2410c; }
+  .ef-title { font-size:13.5px; font-weight:700; margin-bottom:6px; line-height:1.3; }
+  #eraFloat.blue   .ef-title { color:#1e3a8a; }
+  #eraFloat.red    .ef-title { color:#7f1d1d; }
+  #eraFloat.orange .ef-title { color:#7c2d12; }
+  .ef-body { font-size:12px; line-height:1.75; }
+  #eraFloat.blue   .ef-body { color:#1e40af; }
+  #eraFloat.red    .ef-body { color:#991b1b; }
+  #eraFloat.orange .ef-body { color:#9a3412; }
+  .ef-body li { list-style:none; display:flex; gap:5px; align-items:baseline; }
+  .ef-body li::before { content:'▸'; font-size:8px; flex-shrink:0; }
+
+  /* DATA TOOLTIP */
+  #tooltip {
+    position: fixed; pointer-events: none; opacity: 0; transition: opacity 0.12s;
+    z-index: 300; background: white; border: 1px solid var(--border-strong);
+    border-radius: 9px; padding: 11px 14px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.11); min-width: 185px;
+  }
+  #tooltip.visible { opacity: 1; }
+  .tt-year    { font-family:'DM Mono',monospace; font-size:12.5px; font-weight:600; color:var(--accent); border-bottom:1px solid var(--border); margin-bottom:6px; padding-bottom:5px; }
+  .tt-row     { display:flex; justify-content:space-between; gap:12px; padding:2px 0; }
+  .tt-label   { color:var(--text-muted); font-size:11px; }
+  .tt-val     { font-family:'DM Mono',monospace; font-size:11.5px; font-weight:600; }
+  .tt-divider { border:none; border-top:1px dashed var(--border); margin:4px 0; }
+
+  /* ANNOTATIONS */
+  .ann-section-title { font-size:11.5px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:11px; }
+  .annotations-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(265px,1fr)); gap:10px; }
+  .annotation-card { border-radius:9px; padding:12px 14px; border:1px solid; transition:box-shadow 0.2s,transform 0.15s; cursor:default; }
+  .annotation-card:hover { box-shadow:0 3px 14px rgba(0,0,0,0.08); transform:translateY(-1px); }
+  .annotation-card.blue   { background:#eff6ff; border-color:#bfdbfe; }
+  .annotation-card.red    { background:#fef2f2; border-color:#fecaca; }
+  .annotation-card.orange { background:#fff7ed; border-color:#fed7aa; }
+  .ann-period { font-family:'DM Mono',monospace; font-size:10px; font-weight:600; letter-spacing:0.1em; margin-bottom:4px; }
+  .annotation-card.blue   .ann-period { color:#1d4ed8; }
+  .annotation-card.red    .ann-period { color:#b91c1c; }
+  .annotation-card.orange .ann-period { color:#c2410c; }
+  .ann-title { font-size:13px; font-weight:700; margin-bottom:6px; line-height:1.3; }
+  .annotation-card.blue   .ann-title { color:#1e3a8a; }
+  .annotation-card.red    .ann-title { color:#7f1d1d; }
+  .annotation-card.orange .ann-title { color:#7c2d12; }
+  .ann-body { font-size:11.5px; line-height:1.7; }
+  .annotation-card.blue   .ann-body { color:#1e40af; }
+  .annotation-card.red    .ann-body { color:#991b1b; }
+  .annotation-card.orange .ann-body { color:#9a3412; }
+  .ann-body li { list-style:none; display:flex; gap:5px; align-items:baseline; }
+  .ann-body li::before { content:'▸'; font-size:8px; flex-shrink:0; }
+
+  .footer { padding:13px 40px; border-top:1px solid var(--border); font-size:11px; color:var(--text-light); display:flex; justify-content:space-between; background:var(--surface); }
+
+  @media (max-width:768px) {
+    .header,.controls-bar,.main,.footer { padding-left:16px; padding-right:16px; }
+    .kpi-strip { grid-template-columns:repeat(2,1fr); }
+    #mainChart { height:340px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-badge">Benesse TBBS — Interactive Business History</div>
+  <h1 class="header-title">台北事業の歴史</h1>
+  <p class="header-sub">FY1990 – FY2025 ／ 巧虎・しまじろうIPを軸とした教育事業35年間の軌跡</p>
+</div>
+
+<div class="controls-bar">
+  <span class="controls-label">表示切替</span>
+  <button class="toggle-btn btn-revenue active"    onclick="toggleSeries('revenue',this)"><span class="dot"></span>売上高</button>
+  <button class="toggle-btn btn-profit active"     onclick="toggleSeries('profit',this)"><span class="dot"></span>営業利益</button>
+  <button class="toggle-btn btn-enrollment active" onclick="toggleSeries('enrollment',this)"><span class="dot"></span>在籍数</button>
+  <button class="toggle-btn btn-birth active"      onclick="toggleSeries('birth',this)"><span class="dot"></span>出生数</button>
+  <button class="toggle-btn btn-staff active"      onclick="toggleSeries('staff',this)"><span class="dot"></span>社員数</button>
+</div>
+
+<div class="main">
+  <div class="kpi-strip">
+    <div class="kpi-card">
+      <div class="kpi-label">売上ピーク</div>
+      <div class="kpi-value" style="color:var(--revenue)">4,564M</div>
+      <div class="kpi-sub">FY2014（百万円）</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">FY25売上</div>
+      <div class="kpi-value" style="color:var(--revenue)">823M</div>
+      <div class="kpi-sub">ピーク比 −82%</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">在籍ピーク</div>
+      <div class="kpi-value" style="color:var(--enrollment)">22.2万</div>
+      <div class="kpi-sub">FY2005</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">出生数変化</div>
+      <div class="kpi-value" style="color:var(--birth)">−68%</div>
+      <div class="kpi-sub">33.6→10.8万（開講時比）</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">社員数</div>
+      <div class="kpi-value" style="color:var(--staff)">541→49</div>
+      <div class="kpi-sub">ピーク時の 9%</div>
+    </div>
+  </div>
+
+  <div class="chart-wrapper">
+    <div class="chart-header">
+      <div class="chart-title">売上・利益（左軸）／ 在籍・出生数・社員数（右軸）複合チャート</div>
+      <div class="chart-hint">バー・折れ線にカーソル → 数値表示 ／ 年ラベル・背景帯にカーソル → 時代解説表示</div>
+    </div>
+    <svg id="mainChart"></svg>
+  </div>
+
+  <div>
+    <div class="ann-section-title">時代別解説</div>
+    <div class="annotations-grid" id="annotations"></div>
+  </div>
+</div>
+
+<div class="footer">
+  <span>データ出所：台北支社社内資料（FY1990〜FY2025）</span>
+  <span>© Benesse TBBS — Confidential</span>
+</div>
+
+<div id="eraFloat"></div>
+<div id="tooltip"></div>
+
+<script>
+// DATA
+const years = ['FY90','FY91','FY92','FY93','FY94','FY95','FY96','FY97','FY98','FY99',
+  'FY00','FY01','FY02','FY03','FY04','FY05','FY06','FY07','FY08','FY09',
+  'FY10','FY11','FY12','FY13','FY14','FY15','FY16','FY17','FY18','FY19',
+  'FY20','FY21','FY22','FY23','FY24','FY25'];
+const revenue    = [767,566,521,583,553,792,1168,1260,1477,1759,2023,2278,2847,2983,3213,3530,3618,3576,2768,2568,2547,2606,2831,3713,4564,4588,3954,3871,2940,2065,2247,2539,2946,2884,1545,823];
+const profit     = [-596,-217,-222,-405,-312,-435,-421,-223,-343,-315,-226,-211,-343,-315,12,186,142,176,197,-41,-38,-25,30,77,101,190,70,-154,-413,-263,-337,-316,-240,-123,-82,-13];
+const enrollment = [3.8,2.5,2.1,2.7,3.1,4.9,6,6.9,8.8,11.3,13.6,14.4,17.1,17.8,19.8,22.2,21.5,19.1,17.7,17.4,16.9,17.6,18.4,19.1,18.9,17.8,16.1,14.6,10.5,9.1,9.6,10.2,10,8.9,null,null];
+const birth      = [33.6,32.2,32.2,32.6,32.3,33,32.6,32.6,27.1,28.4,30.5,26,24.8,22.7,21.6,20.6,20.4,20.4,19.9,16.7,19.7,22.9,19,21,20.8,19.4,18.2,17.8,16.5,15.4,13.9,13.6,13.5,10.8,null,null];
+const staff      = [27,29,32,40,48,82,142,175,230,305,350,395,489,493,541,517,442,405,390,382,367,361,353,356,361,351,331,303,266,237,229,218,215,212,106,49];
+
+// ERAS
+const eras = [
+  { start:0,  end:12,  type:'red',    period:'FY90〜FY02', title:'創業以来13年間 赤字',
+    points:['単一商品（巧虎講座）の電話営業モデルを模索','累積赤字が積み上がる厳しい黎明期','本社ベネッセコーポレーションの支援で継続'] },
+  { start:18, end:20,  type:'red',    period:'FY08〜FY10', title:'経営混乱期',
+    points:['マーケティング戦略の失敗による会員数急落','社員間対立が組織を混乱','回復に向けた抜本的改革が迫られた'] },
+  { start:22, end:25,  type:'blue',   period:'FY12〜FY15', title:'第1次拡大期 — 売上4,564M達成',
+    points:['為替効果（円安）が売上を押し上げ','舞台劇事業拡大・祈福事業との連携','祈国事業向け玩具販売（現在はBHKに移管）','会員数ピーク維持と在籍基盤の安定化'] },
+  { start:26, end:27,  type:'red',    period:'FY16〜FY17', title:'乱高マーケティングで継続率が大幅悪化',
+    points:['過激な新規獲得施策が既存会員の不満を招く','継続率の急落が売上・利益を直撃'] },
+  { start:28, end:29,  type:'orange', period:'FY18〜FY19', title:'品質改革フェーズ',
+    points:['顧客クレームを受けて後払い制度・自動継続廃止を決断','祈国向け玩具販売から撤退','短期的に売上が落ちるが継続率・顧客満足度が回復'] },
+  { start:30, end:32,  type:'blue',   period:'FY20〜FY22', title:'第2次拡大期 — 講座事業構造改革期',
+    points:['後払い廃止により顧客満足度・継続率が向上','ライセンス事業・舞台劇事業が再拡大','周辺商品ラインナップを強化し収益多角化'] },
+  { start:33, end:33,  type:'red',    period:'FY23', title:'講座事業断念 — 少子化の壁',
+    points:['黒字化一歩手前で少子化加速が決定打','出生数は開講時の約1/3（10.8万）まで減少','月刊講座モデルを2025年3月号で完全廃刊決定'] },
+  { start:34, end:35,  type:'blue',   period:'FY24〜FY25', title:'再建完了・成長未完成フェーズ（現在）',
+    points:['社員数49名・固定費大幅圧縮でBEP達成','IP×SKU×データ会社（TBBS）へのモデル転換','LC8T（LINE×CDP×Super8×TEL）フレームワーク稼働','FY26のCV率改善・LTV経営確立が最重要課題'] },
+];
+
+const visible = { revenue:true, profit:true, enrollment:true, birth:true, staff:true };
+let eraHideTimer = null;
+
+// ANNOTATIONS
+function renderAnnotations() {
+  document.getElementById('annotations').innerHTML = eras.map(a=>`
+    <div class="annotation-card ${a.type}">
+      <div class="ann-period">${a.period}</div>
+      <div class="ann-title">${a.title}</div>
+      <ul class="ann-body">${a.points.map(p=>`<li>${p}</li>`).join('')}</ul>
+    </div>`).join('');
+}
+
+// ERA INDEX LOOKUP
+function getEraForIndex(i) {
+  return eras.find(e => i >= e.start && i <= e.end) || null;
+}
+
+// ERA FLOAT
+function showEraFloat(event, era) {
+  if (!era) { hideEraFloat(); return; }
+  clearTimeout(eraHideTimer);
+  const ef = document.getElementById('eraFloat');
+  ef.className = `${era.type} visible`;
+  ef.innerHTML = `
+    <div class="ef-period">${era.period}</div>
+    <div class="ef-title">${era.title}</div>
+    <ul class="ef-body">${era.points.map(p=>`<li>${p}</li>`).join('')}</ul>`;
+  let x = event.clientX + 18, y = event.clientY - 10;
+  if (x + 320 > window.innerWidth - 8) x = event.clientX - 325;
+  if (y + 220 > window.innerHeight)    y = event.clientY - 200;
+  ef.style.left = x+'px'; ef.style.top = y+'px';
+}
+function hideEraFloat() {
+  eraHideTimer = setTimeout(()=>{
+    document.getElementById('eraFloat').classList.remove('visible');
+  }, 100);
+}
+
+// DATA TOOLTIP
+function showTooltip(event, i) {
+  const tt = document.getElementById('tooltip');
+  let h = `<div class="tt-year">${years[i]}</div>`;
+  if (visible.revenue)
+    h += `<div class="tt-row"><span class="tt-label">売上高</span><span class="tt-val" style="color:#2563eb">${revenue[i].toLocaleString()} M円</span></div>`;
+  if (visible.profit && profit[i]!==null) {
+    const c = profit[i]>=0 ? '#16a34a' : '#dc2626';
+    h += `<div class="tt-row"><span class="tt-label">営業利益</span><span class="tt-val" style="color:${c}">${profit[i]>=0?'+':''}${profit[i].toLocaleString()} M円</span></div>`;
+  }
+  const hasRight = (visible.enrollment && enrollment[i]!==null) || (visible.birth && birth[i]!==null) || visible.staff;
+  if (hasRight) h += `<hr class="tt-divider">`;
+  if (visible.enrollment && enrollment[i]!==null)
+    h += `<div class="tt-row"><span class="tt-label">在籍数</span><span class="tt-val" style="color:#d97706">${enrollment[i]} 万人</span></div>`;
+  if (visible.birth && birth[i]!==null)
+    h += `<div class="tt-row"><span class="tt-label">出生数</span><span class="tt-val" style="color:#7c3aed">${birth[i]} 万人</span></div>`;
+  if (visible.staff)
+    h += `<div class="tt-row"><span class="tt-label">社員数</span><span class="tt-val" style="color:#ea580c">${staff[i]} 人</span></div>`;
+  tt.innerHTML = h;
+  tt.classList.add('visible');
+  let x = event.clientX+16, y = event.clientY-10;
+  if (x+210>window.innerWidth) x = event.clientX-220;
+  if (y+230>window.innerHeight) y = event.clientY-210;
+  tt.style.left=x+'px'; tt.style.top=y+'px';
+}
+function hideTooltip() {
+  document.getElementById('tooltip').classList.remove('visible');
+}
+
+// MAIN CHART
+function drawChart() {
+  const svg = document.getElementById('mainChart');
+  const W = svg.clientWidth || svg.parentElement.clientWidth || 900;
+  const H = 500;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+  const PAD = { top:36, right:80, bottom:78, left:70 };
+  const CW = W - PAD.left - PAD.right;
+  const CH = H - PAD.top - PAD.bottom;
+  const n  = years.length;
+  const gap = CW / n;
+  const barW = gap * 0.52;
+  const getX = i => PAD.left + i*gap + gap/2;
+
+  // LEFT AXIS (revenue & profit)
+  const leftMax=5000, leftMin=-700, leftRange=leftMax-leftMin;
+  const scaleL = v => PAD.top + CH*(1-(v-leftMin)/leftRange);
+  const zeroY  = scaleL(0);
+
+  // RIGHT AXIS (enrollment 0-25, birth 0-38, staff 0-600 mapped onto 0-38 display)
+  const rightMax=38;
+  const scaleR     = v => PAD.top + CH*(1 - v/rightMax);
+  const scaleStaff = v => PAD.top + CH*(1 - (v/600));
+
+  let h = `<defs>
+    <linearGradient id="rg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2563eb" stop-opacity="0.78"/>
+      <stop offset="100%" stop-color="#2563eb" stop-opacity="0.42"/>
+    </linearGradient>
+    <linearGradient id="ppg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#16a34a" stop-opacity="0.82"/>
+      <stop offset="100%" stop-color="#16a34a" stop-opacity="0.42"/>
+    </linearGradient>
+    <linearGradient id="png" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#dc2626" stop-opacity="0.42"/>
+      <stop offset="100%" stop-color="#dc2626" stop-opacity="0.78"/>
+    </linearGradient>
+  </defs>`;
+
+  // ERA BANDS (hoverable)
+  eras.forEach(era => {
+    const x1 = PAD.left + era.start*gap;
+    const x2 = PAD.left + (era.end+1)*gap;
+    const col = era.type==='blue'   ? 'rgba(37,99,235,0.045)'
+               : era.type==='red'   ? 'rgba(220,38,38,0.045)'
+               : 'rgba(217,119,6,0.045)';
+    h += `<rect x="${x1}" y="${PAD.top}" width="${x2-x1}" height="${CH}" fill="${col}"
+      onmouseenter="showEraFloat(event,getEraForIndex(${era.start}))"
+      onmousemove="showEraFloat(event,getEraForIndex(${era.start}))"
+      onmouseleave="hideEraFloat()" style="cursor:default"/>`;
+  });
+
+  // LEFT GRID
+  [-600,-400,-200,0,500,1000,2000,3000,4000,5000].forEach(t=>{
+    if(t<leftMin||t>leftMax) return;
+    const y = scaleL(t);
+    const isZ = t===0;
+    h += `<line x1="${PAD.left}" y1="${y}" x2="${W-PAD.right}" y2="${y}"
+      stroke="${isZ?'#94a3b8':'#e2e8f0'}" stroke-width="${isZ?1.2:0.7}"
+      stroke-dasharray="${isZ?'none':'3,4'}"/>`;
+    h += `<text x="${PAD.left-7}" y="${y+4}" text-anchor="end"
+      fill="${isZ?'#475569':'#94a3b8'}" font-size="9.5" font-family="DM Mono,monospace">${t}</text>`;
+  });
+
+  // RIGHT AXIS TICKS
+  [0,5,10,15,20,25,30,35].forEach(t=>{
+    const y = scaleR(t);
+    h += `<text x="${W-PAD.right+7}" y="${y+4}" text-anchor="start"
+      fill="#94a3b8" font-size="9" font-family="DM Mono,monospace">${t}</text>`;
+  });
+  if(visible.staff){
+    [100,200,300,400,500].forEach(t=>{
+      const y = scaleStaff(t);
+      h += `<text x="${W-PAD.right+36}" y="${y+3}" text-anchor="start"
+        fill="#ea580c" font-size="7.5" font-family="DM Mono,monospace" opacity="0.55">(${t})</text>`;
+    });
+  }
+
+  // AXIS LABELS
+  const lax = PAD.left-54;
+  h += `<text x="${lax}" y="${PAD.top+CH/2}" text-anchor="middle" dominant-baseline="middle"
+    fill="#64748b" font-size="10" font-family="Noto Sans JP"
+    transform="rotate(-90,${lax},${PAD.top+CH/2})">売上・利益（百万円）</text>`;
+  const rax = W-PAD.right+62;
+  h += `<text x="${rax}" y="${PAD.top+CH/2}" text-anchor="middle" dominant-baseline="middle"
+    fill="#64748b" font-size="10" font-family="Noto Sans JP"
+    transform="rotate(90,${rax},${PAD.top+CH/2})">在籍・出生（万人）</text>`;
+
+  // REVENUE BARS
+  if(visible.revenue){
+    years.forEach((_,i)=>{
+      const x=getX(i)-barW/2, ry=scaleL(revenue[i]), rh=zeroY-ry;
+      h += `<rect x="${x}" y="${ry}" width="${barW}" height="${rh}" fill="url(#rg)" rx="2" style="cursor:pointer"
+        onmouseenter="showTooltip(event,${i})" onmousemove="showTooltip(event,${i})" onmouseleave="hideTooltip()"/>`;
+    });
+  }
+
+  // PROFIT BARS
+  if(visible.profit){
+    years.forEach((_,i)=>{
+      const p=profit[i]; if(p===null) return;
+      const cx=getX(i), pw=barW*0.5;
+      const isP=p>=0, py=isP?scaleL(p):zeroY, ph=Math.abs(scaleL(p)-zeroY);
+      h += `<rect x="${cx-pw/2}" y="${py}" width="${pw}" height="${ph}"
+        fill="${isP?'url(#ppg)':'url(#png)'}" rx="1" style="cursor:pointer"
+        onmouseenter="showTooltip(event,${i})" onmousemove="showTooltip(event,${i})" onmouseleave="hideTooltip()"/>`;
+    });
+  }
+
+  // ENROLLMENT LINE
+  if(visible.enrollment){
+    let d='',s=false;
+    enrollment.forEach((v,i)=>{
+      if(v===null) return;
+      const x=getX(i),y=scaleR(v);
+      d+=s?` L${x} ${y}`:`M${x} ${y}`; s=true;
+    });
+    h+=`<path d="${d}" stroke="#d97706" stroke-width="2.3" fill="none" stroke-linejoin="round" stroke-linecap="round"/>`;
+    enrollment.forEach((v,i)=>{
+      if(v===null) return;
+      h+=`<circle cx="${getX(i)}" cy="${scaleR(v)}" r="3.8" fill="white" stroke="#d97706" stroke-width="2.2" style="cursor:pointer"
+        onmouseenter="showTooltip(event,${i})" onmousemove="showTooltip(event,${i})" onmouseleave="hideTooltip()"/>`;
+    });
+  }
+
+  // BIRTH LINE
+  if(visible.birth){
+    let d='',s=false;
+    birth.forEach((v,i)=>{
+      if(v===null) return;
+      const x=getX(i),y=scaleR(v);
+      d+=s?` L${x} ${y}`:`M${x} ${y}`; s=true;
+    });
+    h+=`<path d="${d}" stroke="#7c3aed" stroke-width="2.3" fill="none" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="5,3"/>`;
+    birth.forEach((v,i)=>{
+      if(v===null) return;
+      h+=`<circle cx="${getX(i)}" cy="${scaleR(v)}" r="3.2" fill="white" stroke="#7c3aed" stroke-width="2.2" style="cursor:pointer"
+        onmouseenter="showTooltip(event,${i})" onmousemove="showTooltip(event,${i})" onmouseleave="hideTooltip()"/>`;
+    });
+  }
+
+  // STAFF LINE
+  if(visible.staff){
+    let d='',s=false;
+    staff.forEach((v,i)=>{
+      const x=getX(i),y=scaleStaff(v);
+      d+=s?` L${x} ${y}`:`M${x} ${y}`; s=true;
+    });
+    h+=`<path d="${d}" stroke="#ea580c" stroke-width="1.8" fill="none" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="2,3" opacity="0.85"/>`;
+    staff.forEach((v,i)=>{
+      h+=`<circle cx="${getX(i)}" cy="${scaleStaff(v)}" r="2.6" fill="white" stroke="#ea580c" stroke-width="1.8" opacity="0.85" style="cursor:pointer"
+        onmouseenter="showTooltip(event,${i})" onmousemove="showTooltip(event,${i})" onmouseleave="hideTooltip()"/>`;
+    });
+  }
+
+  // X AXIS
+  years.forEach((yr,i)=>{
+    const cx=getX(i);
+    const era=getEraForIndex(i);
+    const isL=i%5===0||i===years.length-1;
+    h+=`<line x1="${cx}" y1="${PAD.top+CH}" x2="${cx}" y2="${PAD.top+CH+4}" stroke="#e2e8f0" stroke-width="0.8"/>`;
+    h+=`<text x="${cx}" y="${H-PAD.bottom+16}" text-anchor="middle"
+      fill="${isL?'#475569':'#94a3b8'}" font-size="${isL?'10':'8.5'}" font-family="DM Mono,monospace"
+      style="cursor:${era?'help':'default'}"
+      ${era?`onmouseenter="showEraFloat(event,getEraForIndex(${i}))"
+             onmousemove="showEraFloat(event,getEraForIndex(${i}))"
+             onmouseleave="hideEraFloat()"`:''} >${yr}</text>`;
+  });
+
+  // LEGEND
+  const items=[];
+  if(visible.revenue)    items.push({label:'売上高（左軸）',color:'#2563eb',type:'bar'});
+  if(visible.profit)     items.push({label:'営業利益 緑=黒字/赤=赤字（左軸）',color:'#dc2626',type:'bar2'});
+  if(visible.enrollment) items.push({label:'在籍数（右軸・万人）',color:'#d97706',type:'line'});
+  if(visible.birth)      items.push({label:'出生数（右軸・万人）',color:'#7c3aed',type:'dash'});
+  if(visible.staff)      items.push({label:'社員数（右軸・人）',color:'#ea580c',type:'dot'});
+
+  // wrap to 2 rows if needed
+  const ly1=H-PAD.bottom+36, ly2=H-PAD.bottom+52;
+  const half=Math.ceil(items.length/2);
+  items.forEach((item,idx)=>{
+    const row = idx<half ? 0 : 1;
+    const col = idx<half ? idx : idx-half;
+    const maxW = CW/half;
+    const lx = PAD.left + col*maxW;
+    const ly = row===0 ? ly1 : ly2;
+    if(item.type==='bar'||item.type==='bar2'){
+      const c2=item.type==='bar'?'#2563eb':'#dc2626';
+      h+=`<rect x="${lx}" y="${ly-8}" width="11" height="9" fill="${c2}" opacity="0.72" rx="1"/>`;
+      if(item.type==='bar2'){
+        h+=`<rect x="${lx+6}" y="${ly-8}" width="5" height="9" fill="#16a34a" opacity="0.72" rx="0 1 1 0"/>`;
+      }
+    } else if(item.type==='line'){
+      h+=`<line x1="${lx}" y1="${ly-3}" x2="${lx+14}" y2="${ly-3}" stroke="${item.color}" stroke-width="2.2"/>
+          <circle cx="${lx+7}" cy="${ly-3}" r="3" fill="white" stroke="${item.color}" stroke-width="2"/>`;
+    } else if(item.type==='dash'){
+      h+=`<line x1="${lx}" y1="${ly-3}" x2="${lx+14}" y2="${ly-3}" stroke="${item.color}" stroke-width="2.2" stroke-dasharray="4,2"/>
+          <circle cx="${lx+7}" cy="${ly-3}" r="2.6" fill="white" stroke="${item.color}" stroke-width="2"/>`;
+    } else {
+      h+=`<line x1="${lx}" y1="${ly-3}" x2="${lx+14}" y2="${ly-3}" stroke="${item.color}" stroke-width="1.8" stroke-dasharray="2,2"/>
+          <circle cx="${lx+7}" cy="${ly-3}" r="2.4" fill="white" stroke="${item.color}" stroke-width="1.8"/>`;
+    }
+    h+=`<text x="${lx+19}" y="${ly}" fill="#475569" font-size="10" font-family="Noto Sans JP">${item.label}</text>`;
+  });
+
+  svg.innerHTML = h;
+}
+
+// TOGGLE
+function toggleSeries(key, btn) {
+  visible[key]=!visible[key];
+  btn.classList.toggle('active', visible[key]);
+  btn.classList.toggle('inactive', !visible[key]);
+  drawChart();
+}
+
+// INIT
+function init() {
+  renderAnnotations();
+  drawChart();
+  window.addEventListener('resize', drawChart);
+}
+init();
+</script>
+</body>
+</html>
