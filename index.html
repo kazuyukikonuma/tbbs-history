@@ -30,24 +30,24 @@
   .header {
     background: var(--surface); border-bottom: 1px solid var(--border); padding: 26px 40px 18px;
   }
-  .header-badge { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.18em; color: var(--accent); text-transform: uppercase; margin-bottom: 7px; }
-  .header-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(28px,4vw,44px); letter-spacing: 0.05em; color: var(--text); margin-bottom: 4px; }
-  .header-sub { font-size: 12px; color: var(--text-muted); }
+  .header-badge { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.18em; color: var(--accent); text-transform: uppercase; margin-bottom: 7px; }
+  .header-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(34px,5vw,54px); letter-spacing: 0.05em; color: var(--text); margin-bottom: 4px; }
+  .header-sub { font-size: 14px; color: var(--text-muted); }
 
   .controls-bar {
     background: var(--surface); border-bottom: 1px solid var(--border);
-    padding: 12px 40px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    padding: 14px 40px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
   }
-  .controls-label { font-size: 11px; letter-spacing: 0.1em; color: var(--text-muted); text-transform: uppercase; margin-right: 4px; font-weight: 600; }
+  .controls-label { font-size: 13px; letter-spacing: 0.1em; color: var(--text-muted); text-transform: uppercase; margin-right: 4px; font-weight: 600; }
   .toggle-btn {
-    display: flex; align-items: center; gap: 7px; padding: 5px 12px;
+    display: flex; align-items: center; gap: 7px; padding: 6px 14px;
     border-radius: 20px; border: 1.5px solid; background: transparent;
-    cursor: pointer; font-family: 'Noto Sans JP', sans-serif; font-size: 12px; font-weight: 500;
+    cursor: pointer; font-family: 'Noto Sans JP', sans-serif; font-size: 14px; font-weight: 500;
     transition: all 0.18s; user-select: none;
   }
   .toggle-btn.active  { opacity: 1; }
   .toggle-btn.inactive { opacity: 0.28; filter: grayscale(0.7); }
-  .toggle-btn .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .toggle-btn .dot { width: 8px; height: 8px; border-radius: 50%; }
   .btn-revenue    { border-color: var(--revenue);    color: var(--revenue);    }
   .btn-revenue.active    { background: rgba(37,99,235,0.06); }
   .btn-revenue    .dot   { background: var(--revenue); }
@@ -69,91 +69,91 @@
   .kpi-strip { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; }
   .kpi-card {
     background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-    padding: 13px 15px; transition: box-shadow 0.2s;
+    padding: 15px 17px; transition: box-shadow 0.2s;
   }
   .kpi-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
-  .kpi-label { font-size: 10px; letter-spacing: 0.09em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; font-weight: 600; }
-  .kpi-value { font-family: 'DM Mono', monospace; font-size: 19px; font-weight: 500; margin-bottom: 2px; }
-  .kpi-sub   { font-size: 10px; color: var(--text-muted); }
+  .kpi-label { font-size: 12px; letter-spacing: 0.09em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; font-weight: 600; }
+  .kpi-value { font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 500; margin-bottom: 3px; }
+  .kpi-sub   { font-size: 12px; color: var(--text-muted); }
 
   .chart-wrapper {
     background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-    padding: 18px 22px 10px; position: relative;
+    padding: 20px 24px 12px; position: relative;
   }
-  .chart-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-  .chart-title  { font-size: 13px; font-weight: 700; color: var(--text); }
-  .chart-hint   { font-size: 11px; color: var(--text-light); }
-  #mainChart    { width: 100%; height: 500px; display: block; overflow: visible; }
+  .chart-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .chart-title  { font-size: 15px; font-weight: 700; color: var(--text); }
+  .chart-hint   { font-size: 13px; color: var(--text-light); }
+  #mainChart    { width: 100%; height: 520px; display: block; overflow: visible; }
 
   /* ERA FLOAT */
   #eraFloat {
     position: fixed; pointer-events: none; opacity: 0; transition: opacity 0.16s;
-    z-index: 200; min-width: 255px; max-width: 315px;
-    border-radius: 10px; padding: 13px 15px;
+    z-index: 200; min-width: 270px; max-width: 340px;
+    border-radius: 10px; padding: 14px 17px;
     box-shadow: 0 8px 30px rgba(0,0,0,0.13), 0 1px 4px rgba(0,0,0,0.07); border: 1px solid;
   }
   #eraFloat.visible { opacity: 1; }
   #eraFloat.blue   { background: #eff6ff; border-color: #93c5fd; }
   #eraFloat.red    { background: #fef2f2; border-color: #fca5a5; }
   #eraFloat.orange { background: #fff7ed; border-color: #fdba74; }
-  .ef-period { font-family:'DM Mono',monospace; font-size:10.5px; font-weight:600; letter-spacing:0.1em; margin-bottom:4px; }
+  .ef-period { font-family:'DM Mono',monospace; font-size:12px; font-weight:600; letter-spacing:0.1em; margin-bottom:4px; }
   #eraFloat.blue   .ef-period { color:#1d4ed8; }
   #eraFloat.red    .ef-period { color:#b91c1c; }
   #eraFloat.orange .ef-period { color:#c2410c; }
-  .ef-title { font-size:13.5px; font-weight:700; margin-bottom:6px; line-height:1.3; }
+  .ef-title { font-size:15px; font-weight:700; margin-bottom:7px; line-height:1.3; }
   #eraFloat.blue   .ef-title { color:#1e3a8a; }
   #eraFloat.red    .ef-title { color:#7f1d1d; }
   #eraFloat.orange .ef-title { color:#7c2d12; }
-  .ef-body { font-size:12px; line-height:1.75; }
+  .ef-body { font-size:13px; line-height:1.8; }
   #eraFloat.blue   .ef-body { color:#1e40af; }
   #eraFloat.red    .ef-body { color:#991b1b; }
   #eraFloat.orange .ef-body { color:#9a3412; }
   .ef-body li { list-style:none; display:flex; gap:5px; align-items:baseline; }
-  .ef-body li::before { content:'▸'; font-size:8px; flex-shrink:0; }
+  .ef-body li::before { content:'▸'; font-size:9px; flex-shrink:0; }
 
   /* DATA TOOLTIP */
   #tooltip {
     position: fixed; pointer-events: none; opacity: 0; transition: opacity 0.12s;
     z-index: 300; background: white; border: 1px solid var(--border-strong);
-    border-radius: 9px; padding: 11px 14px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.11); min-width: 185px;
+    border-radius: 9px; padding: 12px 16px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.11); min-width: 200px;
   }
   #tooltip.visible { opacity: 1; }
-  .tt-year    { font-family:'DM Mono',monospace; font-size:12.5px; font-weight:600; color:var(--accent); border-bottom:1px solid var(--border); margin-bottom:6px; padding-bottom:5px; }
-  .tt-row     { display:flex; justify-content:space-between; gap:12px; padding:2px 0; }
-  .tt-label   { color:var(--text-muted); font-size:11px; }
-  .tt-val     { font-family:'DM Mono',monospace; font-size:11.5px; font-weight:600; }
-  .tt-divider { border:none; border-top:1px dashed var(--border); margin:4px 0; }
+  .tt-year    { font-family:'DM Mono',monospace; font-size:14px; font-weight:600; color:var(--accent); border-bottom:1px solid var(--border); margin-bottom:7px; padding-bottom:6px; }
+  .tt-row     { display:flex; justify-content:space-between; gap:12px; padding:3px 0; }
+  .tt-label   { color:var(--text-muted); font-size:12px; }
+  .tt-val     { font-family:'DM Mono',monospace; font-size:13px; font-weight:600; }
+  .tt-divider { border:none; border-top:1px dashed var(--border); margin:5px 0; }
 
   /* ANNOTATIONS */
-  .ann-section-title { font-size:11.5px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:11px; }
-  .annotations-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(265px,1fr)); gap:10px; }
-  .annotation-card { border-radius:9px; padding:12px 14px; border:1px solid; transition:box-shadow 0.2s,transform 0.15s; cursor:default; }
+  .ann-section-title { font-size:13px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:13px; }
+  .annotations-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:12px; }
+  .annotation-card { border-radius:9px; padding:14px 16px; border:1px solid; transition:box-shadow 0.2s,transform 0.15s; cursor:default; }
   .annotation-card:hover { box-shadow:0 3px 14px rgba(0,0,0,0.08); transform:translateY(-1px); }
   .annotation-card.blue   { background:#eff6ff; border-color:#bfdbfe; }
   .annotation-card.red    { background:#fef2f2; border-color:#fecaca; }
   .annotation-card.orange { background:#fff7ed; border-color:#fed7aa; }
-  .ann-period { font-family:'DM Mono',monospace; font-size:10px; font-weight:600; letter-spacing:0.1em; margin-bottom:4px; }
+  .ann-period { font-family:'DM Mono',monospace; font-size:11px; font-weight:600; letter-spacing:0.1em; margin-bottom:5px; }
   .annotation-card.blue   .ann-period { color:#1d4ed8; }
   .annotation-card.red    .ann-period { color:#b91c1c; }
   .annotation-card.orange .ann-period { color:#c2410c; }
-  .ann-title { font-size:13px; font-weight:700; margin-bottom:6px; line-height:1.3; }
+  .ann-title { font-size:14px; font-weight:700; margin-bottom:7px; line-height:1.3; }
   .annotation-card.blue   .ann-title { color:#1e3a8a; }
   .annotation-card.red    .ann-title { color:#7f1d1d; }
   .annotation-card.orange .ann-title { color:#7c2d12; }
-  .ann-body { font-size:11.5px; line-height:1.7; }
+  .ann-body { font-size:12.5px; line-height:1.75; }
   .annotation-card.blue   .ann-body { color:#1e40af; }
   .annotation-card.red    .ann-body { color:#991b1b; }
   .annotation-card.orange .ann-body { color:#9a3412; }
   .ann-body li { list-style:none; display:flex; gap:5px; align-items:baseline; }
-  .ann-body li::before { content:'▸'; font-size:8px; flex-shrink:0; }
+  .ann-body li::before { content:'▸'; font-size:9px; flex-shrink:0; }
 
-  .footer { padding:13px 40px; border-top:1px solid var(--border); font-size:11px; color:var(--text-light); display:flex; justify-content:space-between; background:var(--surface); }
+  .footer { padding:14px 40px; border-top:1px solid var(--border); font-size:12px; color:var(--text-light); display:flex; justify-content:space-between; background:var(--surface); }
 
   @media (max-width:768px) {
     .header,.controls-bar,.main,.footer { padding-left:16px; padding-right:16px; }
     .kpi-strip { grid-template-columns:repeat(2,1fr); }
-    #mainChart { height:340px; }
+    #mainChart { height:360px; }
   }
 </style>
 </head>
@@ -286,8 +286,8 @@ function showEraFloat(event, era) {
     <div class="ef-title">${era.title}</div>
     <ul class="ef-body">${era.points.map(p=>`<li>${p}</li>`).join('')}</ul>`;
   let x = event.clientX + 18, y = event.clientY - 10;
-  if (x + 320 > window.innerWidth - 8) x = event.clientX - 325;
-  if (y + 220 > window.innerHeight)    y = event.clientY - 200;
+  if (x + 345 > window.innerWidth - 8) x = event.clientX - 350;
+  if (y + 240 > window.innerHeight)    y = event.clientY - 220;
   ef.style.left = x+'px'; ef.style.top = y+'px';
 }
 function hideEraFloat() {
@@ -317,8 +317,8 @@ function showTooltip(event, i) {
   tt.innerHTML = h;
   tt.classList.add('visible');
   let x = event.clientX+16, y = event.clientY-10;
-  if (x+210>window.innerWidth) x = event.clientX-220;
-  if (y+230>window.innerHeight) y = event.clientY-210;
+  if (x+220>window.innerWidth) x = event.clientX-235;
+  if (y+250>window.innerHeight) y = event.clientY-230;
   tt.style.left=x+'px'; tt.style.top=y+'px';
 }
 function hideTooltip() {
@@ -329,10 +329,10 @@ function hideTooltip() {
 function drawChart() {
   const svg = document.getElementById('mainChart');
   const W = svg.clientWidth || svg.parentElement.clientWidth || 900;
-  const H = 500;
+  const H = 520;
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
 
-  const PAD = { top:36, right:80, bottom:78, left:70 };
+  const PAD = { top:40, right:90, bottom:90, left:80 };
   const CW = W - PAD.left - PAD.right;
   const CH = H - PAD.top - PAD.bottom;
   const n  = years.length;
@@ -340,15 +340,27 @@ function drawChart() {
   const barW = gap * 0.52;
   const getX = i => PAD.left + i*gap + gap/2;
 
-  // LEFT AXIS (revenue & profit)
-  const leftMax=5000, leftMin=-700, leftRange=leftMax-leftMin;
-  const scaleL = v => PAD.top + CH*(1-(v-leftMin)/leftRange);
-  const zeroY  = scaleL(0);
+  // ===== 左軸の設定 =====
+  // leftMin〜leftMax の範囲でスケール
+  const leftMax = 5000;
+  const leftMin = -700;
+  const leftRange = leftMax - leftMin;
+  const scaleL = v => PAD.top + CH * (1 - (v - leftMin) / leftRange);
+  const zeroY  = scaleL(0); // 左軸の0のY座標
 
-  // RIGHT AXIS (enrollment 0-25, birth 0-38, staff 0-600 mapped onto 0-38 display)
-  const rightMax=38;
-  const scaleR     = v => PAD.top + CH*(1 - v/rightMax);
-  const scaleStaff = v => PAD.top + CH*(1 - (v/600));
+  // ===== 右軸の設定：左軸の0と右軸の0を同じY座標に揃える =====
+  // 右軸の最大値（上端に対応）
+  const rightMax = 38;
+  // 右軸1単位あたりのピクセル数 = 左軸の正の領域(0〜5000)のピクセル数 / rightMax
+  const leftPositivePixels = zeroY - PAD.top; // 0から上端までのピクセル
+  const pixPerRightUnit = leftPositivePixels / rightMax;
+  // 右軸スケール: 0をzeroYに揃え、値が大きいほど上（Y小）に
+  const scaleR = v => zeroY - v * pixPerRightUnit;
+
+  // 社員数: 最大600を右軸の38万スケールに合わせて表示
+  // 600人 → rightMax(38)に対応させる比率で
+  const staffScale = 600; // 社員数の表示上限
+  const scaleStaff = v => zeroY - (v / staffScale) * rightMax * pixPerRightUnit;
 
   let h = `<defs>
     <linearGradient id="rg" x1="0" y1="0" x2="0" y2="1">
@@ -378,40 +390,44 @@ function drawChart() {
       onmouseleave="hideEraFloat()" style="cursor:default"/>`;
   });
 
-  // LEFT GRID
+  // LEFT GRID（0ラインを強調）
   [-600,-400,-200,0,500,1000,2000,3000,4000,5000].forEach(t=>{
     if(t<leftMin||t>leftMax) return;
     const y = scaleL(t);
     const isZ = t===0;
     h += `<line x1="${PAD.left}" y1="${y}" x2="${W-PAD.right}" y2="${y}"
-      stroke="${isZ?'#94a3b8':'#e2e8f0'}" stroke-width="${isZ?1.2:0.7}"
+      stroke="${isZ?'#64748b':'#e2e8f0'}" stroke-width="${isZ?1.5:0.7}"
       stroke-dasharray="${isZ?'none':'3,4'}"/>`;
-    h += `<text x="${PAD.left-7}" y="${y+4}" text-anchor="end"
-      fill="${isZ?'#475569':'#94a3b8'}" font-size="9.5" font-family="DM Mono,monospace">${t}</text>`;
+    h += `<text x="${PAD.left-8}" y="${y+4}" text-anchor="end"
+      fill="${isZ?'#334155':'#94a3b8'}" font-size="${isZ?'12':'11'}" font-weight="${isZ?'600':'400'}" font-family="DM Mono,monospace">${t}</text>`;
   });
 
-  // RIGHT AXIS TICKS
+  // RIGHT AXIS TICKS（0〜35）
   [0,5,10,15,20,25,30,35].forEach(t=>{
     const y = scaleR(t);
-    h += `<text x="${W-PAD.right+7}" y="${y+4}" text-anchor="start"
-      fill="#94a3b8" font-size="9" font-family="DM Mono,monospace">${t}</text>`;
+    h += `<line x1="${W-PAD.right}" y1="${y}" x2="${W-PAD.right+4}" y2="${y}"
+      stroke="#e2e8f0" stroke-width="0.8"/>`;
+    h += `<text x="${W-PAD.right+8}" y="${y+4}" text-anchor="start"
+      fill="#94a3b8" font-size="11" font-family="DM Mono,monospace">${t}</text>`;
   });
+
+  // 社員数の右軸補助ティック
   if(visible.staff){
     [100,200,300,400,500].forEach(t=>{
       const y = scaleStaff(t);
-      h += `<text x="${W-PAD.right+36}" y="${y+3}" text-anchor="start"
-        fill="#ea580c" font-size="7.5" font-family="DM Mono,monospace" opacity="0.55">(${t})</text>`;
+      h += `<text x="${W-PAD.right+42}" y="${y+3}" text-anchor="start"
+        fill="#ea580c" font-size="9" font-family="DM Mono,monospace" opacity="0.60">(${t})</text>`;
     });
   }
 
   // AXIS LABELS
-  const lax = PAD.left-54;
+  const lax = PAD.left - 62;
   h += `<text x="${lax}" y="${PAD.top+CH/2}" text-anchor="middle" dominant-baseline="middle"
-    fill="#64748b" font-size="10" font-family="Noto Sans JP"
+    fill="#64748b" font-size="12" font-family="Noto Sans JP"
     transform="rotate(-90,${lax},${PAD.top+CH/2})">売上・利益（百万円）</text>`;
-  const rax = W-PAD.right+62;
+  const rax = W - PAD.right + 76;
   h += `<text x="${rax}" y="${PAD.top+CH/2}" text-anchor="middle" dominant-baseline="middle"
-    fill="#64748b" font-size="10" font-family="Noto Sans JP"
+    fill="#64748b" font-size="12" font-family="Noto Sans JP"
     transform="rotate(90,${rax},${PAD.top+CH/2})">在籍・出生（万人）</text>`;
 
   // REVENUE BARS
@@ -443,10 +459,10 @@ function drawChart() {
       const x=getX(i),y=scaleR(v);
       d+=s?` L${x} ${y}`:`M${x} ${y}`; s=true;
     });
-    h+=`<path d="${d}" stroke="#d97706" stroke-width="2.3" fill="none" stroke-linejoin="round" stroke-linecap="round"/>`;
+    h+=`<path d="${d}" stroke="#d97706" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>`;
     enrollment.forEach((v,i)=>{
       if(v===null) return;
-      h+=`<circle cx="${getX(i)}" cy="${scaleR(v)}" r="3.8" fill="white" stroke="#d97706" stroke-width="2.2" style="cursor:pointer"
+      h+=`<circle cx="${getX(i)}" cy="${scaleR(v)}" r="4" fill="white" stroke="#d97706" stroke-width="2.4" style="cursor:pointer"
         onmouseenter="showTooltip(event,${i})" onmousemove="showTooltip(event,${i})" onmouseleave="hideTooltip()"/>`;
     });
   }
@@ -462,7 +478,7 @@ function drawChart() {
     h+=`<path d="${d}" stroke="#7c3aed" stroke-width="2.3" fill="none" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="5,3"/>`;
     birth.forEach((v,i)=>{
       if(v===null) return;
-      h+=`<circle cx="${getX(i)}" cy="${scaleR(v)}" r="3.2" fill="white" stroke="#7c3aed" stroke-width="2.2" style="cursor:pointer"
+      h+=`<circle cx="${getX(i)}" cy="${scaleR(v)}" r="3.5" fill="white" stroke="#7c3aed" stroke-width="2.2" style="cursor:pointer"
         onmouseenter="showTooltip(event,${i})" onmousemove="showTooltip(event,${i})" onmouseleave="hideTooltip()"/>`;
     });
   }
@@ -474,21 +490,21 @@ function drawChart() {
       const x=getX(i),y=scaleStaff(v);
       d+=s?` L${x} ${y}`:`M${x} ${y}`; s=true;
     });
-    h+=`<path d="${d}" stroke="#ea580c" stroke-width="1.8" fill="none" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="2,3" opacity="0.85"/>`;
+    h+=`<path d="${d}" stroke="#ea580c" stroke-width="2" fill="none" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="2,3" opacity="0.85"/>`;
     staff.forEach((v,i)=>{
-      h+=`<circle cx="${getX(i)}" cy="${scaleStaff(v)}" r="2.6" fill="white" stroke="#ea580c" stroke-width="1.8" opacity="0.85" style="cursor:pointer"
+      h+=`<circle cx="${getX(i)}" cy="${scaleStaff(v)}" r="3" fill="white" stroke="#ea580c" stroke-width="1.8" opacity="0.85" style="cursor:pointer"
         onmouseenter="showTooltip(event,${i})" onmousemove="showTooltip(event,${i})" onmouseleave="hideTooltip()"/>`;
     });
   }
 
-  // X AXIS
+  // X AXIS LABELS
   years.forEach((yr,i)=>{
     const cx=getX(i);
     const era=getEraForIndex(i);
     const isL=i%5===0||i===years.length-1;
-    h+=`<line x1="${cx}" y1="${PAD.top+CH}" x2="${cx}" y2="${PAD.top+CH+4}" stroke="#e2e8f0" stroke-width="0.8"/>`;
-    h+=`<text x="${cx}" y="${H-PAD.bottom+16}" text-anchor="middle"
-      fill="${isL?'#475569':'#94a3b8'}" font-size="${isL?'10':'8.5'}" font-family="DM Mono,monospace"
+    h+=`<line x1="${cx}" y1="${PAD.top+CH}" x2="${cx}" y2="${PAD.top+CH+5}" stroke="#e2e8f0" stroke-width="0.8"/>`;
+    h+=`<text x="${cx}" y="${H-PAD.bottom+20}" text-anchor="middle"
+      fill="${isL?'#475569':'#94a3b8'}" font-size="${isL?'12':'10'}" font-family="DM Mono,monospace"
       style="cursor:${era?'help':'default'}"
       ${era?`onmouseenter="showEraFloat(event,getEraForIndex(${i}))"
              onmousemove="showEraFloat(event,getEraForIndex(${i}))"
@@ -503,8 +519,7 @@ function drawChart() {
   if(visible.birth)      items.push({label:'出生数（右軸・万人）',color:'#7c3aed',type:'dash'});
   if(visible.staff)      items.push({label:'社員数（右軸・人）',color:'#ea580c',type:'dot'});
 
-  // wrap to 2 rows if needed
-  const ly1=H-PAD.bottom+36, ly2=H-PAD.bottom+52;
+  const ly1=H-PAD.bottom+44, ly2=H-PAD.bottom+62;
   const half=Math.ceil(items.length/2);
   items.forEach((item,idx)=>{
     const row = idx<half ? 0 : 1;
@@ -514,21 +529,21 @@ function drawChart() {
     const ly = row===0 ? ly1 : ly2;
     if(item.type==='bar'||item.type==='bar2'){
       const c2=item.type==='bar'?'#2563eb':'#dc2626';
-      h+=`<rect x="${lx}" y="${ly-8}" width="11" height="9" fill="${c2}" opacity="0.72" rx="1"/>`;
+      h+=`<rect x="${lx}" y="${ly-10}" width="13" height="11" fill="${c2}" opacity="0.72" rx="1"/>`;
       if(item.type==='bar2'){
-        h+=`<rect x="${lx+6}" y="${ly-8}" width="5" height="9" fill="#16a34a" opacity="0.72" rx="0 1 1 0"/>`;
+        h+=`<rect x="${lx+7}" y="${ly-10}" width="6" height="11" fill="#16a34a" opacity="0.72" rx="0 1 1 0"/>`;
       }
     } else if(item.type==='line'){
-      h+=`<line x1="${lx}" y1="${ly-3}" x2="${lx+14}" y2="${ly-3}" stroke="${item.color}" stroke-width="2.2"/>
-          <circle cx="${lx+7}" cy="${ly-3}" r="3" fill="white" stroke="${item.color}" stroke-width="2"/>`;
+      h+=`<line x1="${lx}" y1="${ly-4}" x2="${lx+16}" y2="${ly-4}" stroke="${item.color}" stroke-width="2.4"/>
+          <circle cx="${lx+8}" cy="${ly-4}" r="3.5" fill="white" stroke="${item.color}" stroke-width="2.2"/>`;
     } else if(item.type==='dash'){
-      h+=`<line x1="${lx}" y1="${ly-3}" x2="${lx+14}" y2="${ly-3}" stroke="${item.color}" stroke-width="2.2" stroke-dasharray="4,2"/>
-          <circle cx="${lx+7}" cy="${ly-3}" r="2.6" fill="white" stroke="${item.color}" stroke-width="2"/>`;
+      h+=`<line x1="${lx}" y1="${ly-4}" x2="${lx+16}" y2="${ly-4}" stroke="${item.color}" stroke-width="2.4" stroke-dasharray="4,2"/>
+          <circle cx="${lx+8}" cy="${ly-4}" r="3" fill="white" stroke="${item.color}" stroke-width="2.2"/>`;
     } else {
-      h+=`<line x1="${lx}" y1="${ly-3}" x2="${lx+14}" y2="${ly-3}" stroke="${item.color}" stroke-width="1.8" stroke-dasharray="2,2"/>
-          <circle cx="${lx+7}" cy="${ly-3}" r="2.4" fill="white" stroke="${item.color}" stroke-width="1.8"/>`;
+      h+=`<line x1="${lx}" y1="${ly-4}" x2="${lx+16}" y2="${ly-4}" stroke="${item.color}" stroke-width="2" stroke-dasharray="2,2"/>
+          <circle cx="${lx+8}" cy="${ly-4}" r="2.8" fill="white" stroke="${item.color}" stroke-width="2"/>`;
     }
-    h+=`<text x="${lx+19}" y="${ly}" fill="#475569" font-size="10" font-family="Noto Sans JP">${item.label}</text>`;
+    h+=`<text x="${lx+22}" y="${ly}" fill="#475569" font-size="12" font-family="Noto Sans JP">${item.label}</text>`;
   });
 
   svg.innerHTML = h;
