@@ -435,10 +435,9 @@ function drawChart() {
   const H = 500;
   svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
 
-  // 表示範囲：currentEraのend indexまで
+  // 軸は常に全36年固定、データ描画はvisibleEndまで
   const visibleEnd = eras[currentEra].end;
-  const visibleYears = years.slice(0, visibleEnd+1);
-  const n = visibleYears.length;
+  const n = years.length; // 常に36固定
 
   const PAD = { top:36, right:80, bottom:78, left:70 };
   const CW = W - PAD.left - PAD.right;
@@ -519,7 +518,8 @@ function drawChart() {
 
   // REVENUE BARS
   if(visible.revenue){
-    visibleYears.forEach((_,i)=>{
+    years.forEach((_,i)=>{
+      if(i > visibleEnd) return;
       const x=getX(i)-barW/2, ry=scaleL(revenue[i]), rh=zeroY-ry;
       h+=`<rect x="${x}" y="${ry}" width="${barW}" height="${rh}" fill="url(#rg)" rx="2" style="cursor:pointer"
         onmouseenter="showTooltip(event,${i})" onmousemove="showTooltip(event,${i})" onmouseleave="hideTooltip()"/>`;
@@ -528,7 +528,8 @@ function drawChart() {
 
   // PROFIT BARS
   if(visible.profit){
-    visibleYears.forEach((_,i)=>{
+    years.forEach((_,i)=>{
+      if(i > visibleEnd) return;
       const p=profit[i]; if(p===null) return;
       const cx=getX(i), pw=barW*0.5;
       const isP=p>=0, py=isP?scaleL(p):zeroY, ph=Math.abs(scaleL(p)-zeroY);
@@ -541,13 +542,15 @@ function drawChart() {
   // ENROLLMENT LINE
   if(visible.enrollment){
     let d='',s=false;
-    visibleYears.forEach((_,i)=>{
+    years.forEach((_,i)=>{
+      if(i > visibleEnd) return;
       const v=enrollment[i]; if(v===null) return;
       const x=getX(i),y=scaleR(v);
       d+=s?` L${x} ${y}`:`M${x} ${y}`; s=true;
     });
     h+=`<path d="${d}" stroke="#d97706" stroke-width="2.3" fill="none" stroke-linejoin="round" stroke-linecap="round"/>`;
-    visibleYears.forEach((_,i)=>{
+    years.forEach((_,i)=>{
+      if(i > visibleEnd) return;
       const v=enrollment[i]; if(v===null) return;
       h+=`<circle cx="${getX(i)}" cy="${scaleR(v)}" r="3.8" fill="white" stroke="#d97706" stroke-width="2.2" style="cursor:pointer"
         onmouseenter="showTooltip(event,${i})" onmousemove="showTooltip(event,${i})" onmouseleave="hideTooltip()"/>`;
@@ -557,13 +560,15 @@ function drawChart() {
   // BIRTH LINE
   if(visible.birth){
     let d='',s=false;
-    visibleYears.forEach((_,i)=>{
+    years.forEach((_,i)=>{
+      if(i > visibleEnd) return;
       const v=birth[i]; if(v===null) return;
       const x=getX(i),y=scaleR(v);
       d+=s?` L${x} ${y}`:`M${x} ${y}`; s=true;
     });
     h+=`<path d="${d}" stroke="#7c3aed" stroke-width="2.3" fill="none" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="5,3"/>`;
-    visibleYears.forEach((_,i)=>{
+    years.forEach((_,i)=>{
+      if(i > visibleEnd) return;
       const v=birth[i]; if(v===null) return;
       h+=`<circle cx="${getX(i)}" cy="${scaleR(v)}" r="3.2" fill="white" stroke="#7c3aed" stroke-width="2.2" style="cursor:pointer"
         onmouseenter="showTooltip(event,${i})" onmousemove="showTooltip(event,${i})" onmouseleave="hideTooltip()"/>`;
@@ -573,21 +578,23 @@ function drawChart() {
   // STAFF LINE
   if(visible.staff){
     let d='',s=false;
-    visibleYears.forEach((_,i)=>{
+    years.forEach((_,i)=>{
+      if(i > visibleEnd) return;
       const x=getX(i),y=scaleStaff(staff[i]);
       d+=s?` L${x} ${y}`:`M${x} ${y}`; s=true;
     });
     h+=`<path d="${d}" stroke="#ea580c" stroke-width="1.8" fill="none" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="2,3" opacity="0.85"/>`;
-    visibleYears.forEach((_,i)=>{
+    years.forEach((_,i)=>{
+      if(i > visibleEnd) return;
       h+=`<circle cx="${getX(i)}" cy="${scaleStaff(staff[i])}" r="2.6" fill="white" stroke="#ea580c" stroke-width="1.8" opacity="0.85" style="cursor:pointer"
         onmouseenter="showTooltip(event,${i})" onmousemove="showTooltip(event,${i})" onmouseleave="hideTooltip()"/>`;
     });
   }
 
   // X AXIS
-  visibleYears.forEach((yr,i)=>{
+  years.forEach((yr,i)=>{
     const cx=getX(i);
-    const isL=i%5===0||i===visibleYears.length-1;
+    const isL=i%5===0||i===years.length-1;
     const era=getEraForIndex(i);
     h+=`<line x1="${cx}" y1="${PAD.top+CH}" x2="${cx}" y2="${PAD.top+CH+4}" stroke="#e2e8f0" stroke-width="0.8"/>`;
     h+=`<text x="${cx}" y="${H-PAD.bottom+16}" text-anchor="middle"
