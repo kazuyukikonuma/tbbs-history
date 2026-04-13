@@ -366,16 +366,16 @@ function drawChart() {
 
   let h = `<defs>
     <linearGradient id="rg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#2563eb" stop-opacity="0.78"/>
-      <stop offset="100%" stop-color="#2563eb" stop-opacity="0.42"/>
+      <stop offset="0%" stop-color="#2563eb" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#2563eb" stop-opacity="0.80"/>
     </linearGradient>
     <linearGradient id="ppg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#16a34a" stop-opacity="0.82"/>
-      <stop offset="100%" stop-color="#16a34a" stop-opacity="0.42"/>
+      <stop offset="0%" stop-color="#16a34a" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#16a34a" stop-opacity="0.75"/>
     </linearGradient>
     <linearGradient id="png" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#dc2626" stop-opacity="0.42"/>
-      <stop offset="100%" stop-color="#dc2626" stop-opacity="0.78"/>
+      <stop offset="0%" stop-color="#dc2626" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#dc2626" stop-opacity="0.95"/>
     </linearGradient>
   </defs>`;
 
@@ -383,9 +383,9 @@ function drawChart() {
   eras.forEach(era => {
     const x1 = PAD.left + era.start*gap;
     const x2 = PAD.left + (era.end+1)*gap;
-    const col = era.type==='blue'   ? 'rgba(37,99,235,0.045)'
-               : era.type==='red'   ? 'rgba(220,38,38,0.045)'
-               : 'rgba(217,119,6,0.045)';
+    const col = era.type==='blue'   ? 'rgba(37,99,235,0.10)'
+               : era.type==='red'   ? 'rgba(220,38,38,0.10)'
+               : 'rgba(217,119,6,0.10)';
     h += `<rect x="${x1}" y="${PAD.top}" width="${x2-x1}" height="${CH}" fill="${col}"
       onmouseenter="showEraFloat(event,getEraForIndex(${era.start}))"
       onmousemove="showEraFloat(event,getEraForIndex(${era.start}))"
