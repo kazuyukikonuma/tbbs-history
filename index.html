@@ -99,16 +99,6 @@
 
   .main { padding: 22px 40px; display: flex; flex-direction: column; gap: 18px; }
 
-  .kpi-strip { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; }
-  .kpi-card {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-    padding: 13px 15px; transition: box-shadow 0.2s;
-  }
-  .kpi-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
-  .kpi-label { font-size: 10px; letter-spacing: 0.09em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; font-weight: 600; }
-  .kpi-value { font-family: "DM Mono", monospace; font-size: 19px; font-weight: 500; margin-bottom: 2px; }
-  .kpi-sub   { font-size: 10px; color: var(--text-muted); }
-
   .chart-wrapper {
     background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
     padding: 18px 22px 10px; position: relative;
