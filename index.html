@@ -60,6 +60,8 @@
   .btn-next { background: var(--accent); color: white; }
   .btn-next:hover { background: #1e40af; }
   .btn-next:disabled { opacity: 0.3; cursor: default; }
+  .btn-all { background: #475569; color: white; }
+  .btn-all:hover { background: #334155; }
 
   .story-label {
     font-family: "DM Mono", monospace; font-size: 11px; color: var(--text-muted);
@@ -200,6 +202,7 @@
   <div class="story-progress" id="storyProgress"></div>
   <div class="story-label" id="storyLabel"></div>
   <button class="story-btn btn-next" id="btnNext" onclick="stepEra(1)">次の時代 →</button>
+  <button class="story-btn btn-all" id="btnAll" onclick="showAllEras()">全期間表示 ▶▶</button>
 </div>
 
 <div class="controls-bar">
@@ -295,6 +298,11 @@ function updateStoryUI() {
   document.getElementById('btnNext').disabled = currentEra === eras.length - 1;
   renderAnnotations();
   drawChart();
+}
+
+function showAllEras() {
+  currentEra = eras.length - 1;
+  updateStoryUI();
 }
 
 function stepEra(dir) {
